@@ -1,0 +1,26 @@
+	#include<lpc21xx.h>
+	#include "DELAY.h"
+	int main()
+	{
+	int i,j,k;
+	IODIR0=0XFF;
+	IOSET0=0XFF;
+	while(1)
+	{
+	for(j=7,k=0;j>k;j--,k++)
+	{
+	IOCLR0=1<<j|1<<k;
+	delay_ms(500);
+	IOSET0=1<<j|1<<k;
+	delay_ms(500);
+	}
+j++,k--;
+	for(;j<=7 && k>=0;j++,k--)
+	{
+    IOCLR0=1<<k|1<<j;
+	delay_ms(500);
+	IOSET0=1<<k|1<<j;
+	delay_ms(500);
+	}
+	}
+	}
