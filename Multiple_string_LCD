@@ -1,0 +1,55 @@
+#include<lpc21xx.h>
+	#include"delay.h"
+	#define lcd_d 0XFF<<0
+	#define rs 1<<8
+	#define E 1<<9
+	void Init(void);
+	void command(unsigned char);
+	void str(unsigned char*s);
+	void data(unsigned char);
+
+	int main()
+	{
+	Init();
+	command(0X80);
+	str("SWATHI  JAINIKILAN   DAD  MOM");
+	delay_ms(500);
+	command(0X01);
+	}
+	void Init(void)
+	{
+	IODIR0=lcd_d|rs|E;
+	command(0X01);
+	command(0X02);
+	command(0X0C);
+	command(0X38);
+	}
+	void command(unsigned char cmd)
+	{
+	IOCLR0=lcd_d;
+	IOSET0=cmd;
+	IOCLR0=rs;
+	IOSET0=E;
+	delay_ms(2);
+	IOCLR0=E;
+	}
+	void str(unsigned char* s)
+	{
+	unsigned char count=0;
+	while(*s)
+	{
+	data(*s++);
+	count++;
+	if(count==16)
+	  command(0XC0);
+	  }
+	}
+	void data(unsigned char d)
+	{
+	IOCLR0=lcd_d;
+	IOSET0=d;
+	IOSET0=rs;
+	IOSET0=E;
+	delay_ms(2);
+	IOCLR0=E;
+	}
