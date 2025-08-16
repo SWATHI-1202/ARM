@@ -5,7 +5,7 @@
 	int i,j;
 	IODIR0=0XFF;
 	IOSET0=0XFF;
-	for(i=0;i<=2;i++)
+	for(i=0;i<10;i++)
 	{
 	for(j=7;j>=0;j--)
 	{
