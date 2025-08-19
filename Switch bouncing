@@ -1,0 +1,83 @@
+	#include<LPC21XX.H>
+	#include"delay.h"
+	#define lcd_d 0XFF<<0
+	#define rs 1<<8
+	#define e 1<<9
+	#define sw 14
+	void init(void);
+	void integer(unsigned int );
+	void str(unsigned char* );
+	void command(unsigned char);
+	void data(unsigned char);
+	int main()
+	{
+	int count=0;
+	init();
+	command(0X80);
+	str("Switch count:");
+	while(1)
+	{
+	if(((IOPIN0>>sw)&1)==0)
+	{
+	delay_ms(200);
+	count++;
+	command(0XC0);
+	integer(count);
+	while(((IOPIN0>>sw)&1)==0);
+	}
+	}
+	}
+	unsigned char count=0;
+	void str(unsigned char*s)
+	{
+	while(*s)
+	{
+	data(*s++);
+	count++;
+	if(count==16)
+	{
+	command(0XC0);}
+	}
+	}
+	
+	void integer(unsigned int n)
+	{
+	unsigned char arr[5];
+	signed char i=0;
+	while(n>0)
+	{
+	arr[i++]=n%10;
+	n=n/10;
+	}
+	for(--i;i>=0;i--)
+	{
+	data(arr[i]+48);
+	  }
+	  }
+	  void init(void)
+	  {
+	  IODIR0=lcd_d|rs|e|sw;
+	  command(0X01);
+	  command(0X02);
+	  command(0X0C);
+	  command(0X38);
+	  }
+
+	 void command(unsigned char cmd)
+    {
+	IOCLR0=lcd_d;
+	IOSET0=cmd;
+	IOCLR0=rs;
+	IOSET0=e;
+	delay_ms(2);
+	IOCLR0=e;
+	}
+	void data(unsigned char cmd)
+    {
+	IOCLR0=lcd_d;
+	IOSET0=cmd;
+	IOSET0=rs;
+	IOSET0=e;
+	delay_ms(2);
+	IOCLR0=e;
+	}
